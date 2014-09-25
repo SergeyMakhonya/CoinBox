@@ -17,6 +17,7 @@
 #endif
 
 int money;
+int timer;
 
 sf::Font font;
 
@@ -52,7 +53,7 @@ void setValue(int value) {
 	sf::FloatRect rect = text.getGlobalBounds();
 	text.setPosition(winSize.x / 2 - rect.width / 2, 30 + OFFSET_Y);
 
-	save();
+	timer = 0;
 }
 
 void resize(sf::Vector2u size) {
@@ -148,6 +149,11 @@ void update() {
 		else if (isContains(textSub1000.getGlobalBounds(), mousePos))
 			setValue(money - 1000);
 	}
+
+	if (timer == 60)
+		save();
+	if (timer <= 60)
+		timer++;
 }
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
