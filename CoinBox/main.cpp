@@ -18,6 +18,7 @@
 
 int money;
 int timer;
+float fade;
 
 sf::Font font;
 
@@ -43,6 +44,8 @@ void save() {
 	std::ofstream file("data.bin", std::ios::binary);
 	file.write((char*)&money, sizeof(int));
 	file.close();
+
+	fade = 0.0f;
 }
 
 void setValue(int value) {
@@ -51,7 +54,7 @@ void setValue(int value) {
 
 	sf::Vector2u winSize = System::window->getSize();
 	sf::FloatRect rect = text.getGlobalBounds();
-	text.setPosition(winSize.x / 2 - rect.width / 2, 30 + OFFSET_Y);
+	text.setPosition((int)(winSize.x / 2 - rect.width / 2), (int)(30 + OFFSET_Y));
 
 	timer = 0;
 }
@@ -61,6 +64,7 @@ void resize(sf::Vector2u size) {
 		size.x = APP_WIDTH;
 	
 	setValue(money);
+	timer = TIMER_MAX;
 
 	textAdd1.setPosition(sf::Vector2f(size.x - 50, 0 + OFFSET_Y));
 	textAdd10.setPosition(sf::Vector2f(size.x - 66, 50 + OFFSET_Y));
@@ -77,6 +81,8 @@ void resize(sf::Vector2u size) {
 }
 
 bool init() {
+	fade = 1;
+	
 	if (!font.loadFromFile("c:\\Windows\\Fonts\\tahoma.ttf")) {
 		return false;
 	}
@@ -150,10 +156,22 @@ void update() {
 			setValue(money - 1000);
 	}
 
-	if (timer == 60)
+	if (timer == TIMER_MAX)
 		save();
-	if (timer <= 60)
+	if (timer <= TIMER_MAX)
 		timer++;
+
+	if (fade < 1) {
+		fade += 0.015f;
+		if (fade > 0.9f) {
+			fade = 1;
+			text.setColor(sf::Color::Black);
+		}
+		else {
+			sf::Uint8 a = (sf::Uint8)(255 * (1 - fade));
+			text.setColor(sf::Color(a, 0, 0, 255));
+		}
+	}
 }
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {

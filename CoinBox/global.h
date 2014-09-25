@@ -9,6 +9,7 @@
 #define APP_WIDTH 500
 #define APP_HEIGHT 225
 #define OFFSET_Y 15
+#define TIMER_MAX 30
 
 class System {
 public:
